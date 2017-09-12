@@ -629,4 +629,17 @@
     }
 }
 
+//=============================================
+
+-(void)setSliderIndex:(NSInteger)index{
+    if(self.currentIndex != _index){
+        WXSliderView *sliderView = (WXSliderView *)self.view;
+        
+        self.currentIndex = _index;
+        self.sliderView.currentIndex = _index;
+        [sliderView scroll2ItemView:self.currentIndex animated:YES];
+    }
+}
+//=============================================
+
 @end

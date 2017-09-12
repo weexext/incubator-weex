@@ -25,6 +25,11 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 
+//===============================
+#import "NJKWebViewProgress.h"
+#import "NJKWebViewProgressView.h"
+//===============================
+
 @interface WXWebView : UIWebView
 
 @end
@@ -55,6 +60,12 @@
 @property (nonatomic, assign) BOOL failLoadEvent;
 
 @property (nonatomic, assign) BOOL notifyEvent;
+
+
+//====================================
+@property (nonatomic, strong) NJKWebViewProgress *progressProxy;
+@property (nonatomic, strong) NJKWebViewProgressView *progressView;
+//====================================
 
 @end
 
@@ -94,6 +105,21 @@ WX_EXPORT_METHOD(@selector(goForward))
     if (_url) {
         [self loadURL:_url];
     }
+    
+    
+    //===================================
+    _progressProxy = [[NJKWebViewProgress alloc] init]; // instance variable
+    _webview.delegate = _progressProxy;
+    _progressProxy.webViewProxyDelegate = self;
+    _progressProxy.progressDelegate = self;
+    
+    CGRect barFrame = CGRectMake(0,0,_webview.bounds.size.width,3);
+    _progressView = [[NJKWebViewProgressView alloc] initWithFrame:barFrame];
+    _progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    [_progressView setProgress:0 animated:YES];
+    [_webview addSubview:_progressView];
+    
+    //===================================
 }
 
 - (void)updateAttributes:(NSDictionary *)attributes
@@ -210,5 +236,13 @@ WX_EXPORT_METHOD(@selector(goForward))
     }
     return YES;
 }
+
+
+//===================================
+-(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
+{
+    [_progressView setProgress:progress animated:YES];
+}
+//===================================
 
 @end

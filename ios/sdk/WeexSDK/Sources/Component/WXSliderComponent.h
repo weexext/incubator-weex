@@ -26,4 +26,6 @@
 
 - (void)setIndicatorView:(WXIndicatorView *)indicatorView;
 
+- (void)setSliderIndex:(NSInteger)index;
+
 @end

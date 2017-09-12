@@ -33,6 +33,11 @@
 @property (nonatomic, strong) UIView *weexView;
 @property (nonatomic, strong) NSURL *sourceURL;
 
+//==============================================
+@property (nonatomic, strong) UIColor *titleColor;
+@property (nonatomic, strong) UIView *naviView;
+//==============================================
+
 @end
 
 @implementation WXBaseViewController
@@ -82,6 +87,8 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self _renderWithURL:_sourceURL];
+    [self addNaviView];
+    
     if ([self.navigationController isKindOfClass:[WXRootViewController class]]) {
         [self.navigationController setNavigationBarHidden:YES animated:YES];
     }
@@ -202,4 +209,19 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
+//===================================
+#pragma mark -
+- (void)addNaviView {
+    if(!_titleColor)
+        _titleColor = [UIColor colorWithRed:56/255.f green:81/255.f blue:152/255.f alpha:1.f];
+    
+    [self.naviView removeFromSuperview];
+    float width = [UIScreen mainScreen].bounds.size.width;
+    self.naviView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 128*width/750)];
+    [self.naviView setBackgroundColor:_titleColor];
+    [self.view addSubview:self.naviView];
+}
+
+//===================================
 @end

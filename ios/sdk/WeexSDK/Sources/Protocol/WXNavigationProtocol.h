@@ -165,4 +165,15 @@ typedef void (^WXNavigationResultBlock)(NSString *code, NSDictionary * responseD
 - (void)close:(NSDictionary *)param success:(WXModuleCallback)success
                                    failure:(WXModuleCallback)failure
                              withContainer:(UIViewController *)container;
+
+
+//======================
+- (void)presentViewControllerWithParam:(NSDictionary *)param completion:(WXNavigationResultBlock)block
+                         withContainer:(UIViewController *)container;
+
+- (void)dismissViewControllerWithParam:(NSDictionary *)param
+                            completion:(WXNavigationResultBlock)block
+                         withContainer:(UIViewController *)container;
+//======================
+
 @end

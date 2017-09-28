@@ -44,10 +44,6 @@ WX_EXPORT_METHOD(@selector(setNavBarTitle:callback:))
 WX_EXPORT_METHOD(@selector(clearNavBarTitle:callback:))
 WX_EXPORT_METHOD(@selector(setNavBarHidden:callback:))
 
-//============================
-WX_EXPORT_METHOD(@selector(present:callback:))
-WX_EXPORT_METHOD(@selector(dismiss:callback:))
-//============================
 
 - (id<WXNavigationProtocol>)navigator
 {
@@ -197,29 +193,5 @@ WX_EXPORT_METHOD(@selector(dismiss:callback:))
         }
     } withContainer:container];
 }
-
-//==============================================
-- (void)present:(NSDictionary *)param callback:(WXModuleCallback)callback
-{
-    id<WXNavigationProtocol> navigator = [self navigator];
-    UIViewController *container = self.weexInstance.viewController;
-    [navigator presentViewControllerWithParam:param completion:^(NSString *code, NSDictionary *responseData) {
-        if (callback && code) {
-            callback(code);
-        }
-    } withContainer:container];
-}
-
-- (void)dismiss:(NSDictionary *)param callback:(WXModuleCallback)callback
-{
-    id<WXNavigationProtocol> navigator = [self navigator];
-    UIViewController *container = self.weexInstance.viewController;
-    [navigator dismissViewControllerWithParam:param completion:^(NSString *code, NSDictionary *responseData) {
-        if (callback && code) {
-            callback(code);
-        }
-    } withContainer:container];
-}
-//==============================================
 
 @end

@@ -167,13 +167,5 @@ typedef void (^WXNavigationResultBlock)(NSString *code, NSDictionary * responseD
                              withContainer:(UIViewController *)container;
 
 
-//======================
-- (void)presentViewControllerWithParam:(NSDictionary *)param completion:(WXNavigationResultBlock)block
-                         withContainer:(UIViewController *)container;
-
-- (void)dismissViewControllerWithParam:(NSDictionary *)param
-                            completion:(WXNavigationResultBlock)block
-                         withContainer:(UIViewController *)container;
-//======================
 
 @end

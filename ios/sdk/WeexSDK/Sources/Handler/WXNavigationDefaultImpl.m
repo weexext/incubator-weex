@@ -361,49 +361,4 @@
     }
 }
 
-
-
-//=================================
-- (void)presentViewControllerWithParam:(NSDictionary *)param completion:(WXNavigationResultBlock)block
-                         withContainer:(UIViewController *)container
-{
-    if (0 == [param count] || !param[@"url"] || !container) {
-        [self callback:block code:MSG_PARAM_ERR data:nil];
-        return;
-    }
-    
-    BOOL animated = YES;
-    NSString *obj = [[param objectForKey:@"animated"] lowercaseString];
-    if (obj && [obj isEqualToString:@"false"]) {
-        animated = NO;
-    }
-    
-    WXBaseViewController *vc = [[WXBaseViewController alloc]initWithSourceURL:[NSURL URLWithString:param[@"url"]]];
-    vc.hidesBottomBarWhenPushed = YES;
-    
-    vc.view.backgroundColor=[UIColor clearColor];
-    vc.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    
-    __weak typeof(self) weakself = self;
-    [container.navigationController presentViewController:vc animated:animated completion:^{
-        [weakself callback:block code:MSG_SUCCESS data:nil];
-    }];
-}
-
-- (void)dismissViewControllerWithParam:(NSDictionary *)param completion:(WXNavigationResultBlock)block
-                         withContainer:(UIViewController *)container
-{
-    BOOL animated = YES;
-    id obj = [param objectForKey:@"animated"];
-    if (obj) {
-        animated = [WXConvert BOOL:obj];
-    }
-    
-    __weak typeof(self) weakself = self;
-    [container.navigationController dismissViewControllerAnimated:animated completion:^{
-        [weakself callback:block code:MSG_SUCCESS data:nil];
-    }];
-}
-//=================================
-
 @end

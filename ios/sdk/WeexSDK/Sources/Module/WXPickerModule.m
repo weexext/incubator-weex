@@ -232,8 +232,10 @@ WX_EXPORT_METHOD(@selector(pickTime:callback:))
 -(void)configPickerView
 {
     self.backgroundView = [self createbackgroundView];
-    UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hide)];
-    [self.backgroundView addGestureRecognizer:tapGesture];
+//=====================================
+//    UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hide)];
+//    [self.backgroundView addGestureRecognizer:tapGesture];
+//=====================================
     self.pickerView = [self createPickerView];
     UIToolbar *toolBar=[[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, WXPickerToolBarHeight)];
     toolBar.barTintColor = self.titleBackgroundColor?self.titleBackgroundColor:[UIColor whiteColor];
@@ -423,8 +425,10 @@ WX_EXPORT_METHOD(@selector(pickTime:callback:))
 -(void)configDatePickerView
 {
     self.backgroundView = [self createbackgroundView];
-    UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hide)];
-    [self.backgroundView addGestureRecognizer:tapGesture];
+//=====================================
+//    UITapGestureRecognizer *tapGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hide)];
+//    [self.backgroundView addGestureRecognizer:tapGesture];
+//=====================================
     self.pickerView = [self createPickerView];
     UIToolbar *toolBar=[[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, WXPickerToolBarHeight)];
     [toolBar setBackgroundColor:[UIColor whiteColor]];

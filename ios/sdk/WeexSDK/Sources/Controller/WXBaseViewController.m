@@ -87,8 +87,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self _renderWithURL:_sourceURL];
+//============================
     [self addNaviView];
-    
+    [UIApplication sharedApplication].applicationSupportsShakeToEdit = YES;
+//============================
     if ([self.navigationController isKindOfClass:[WXRootViewController class]]) {
         [self.navigationController setNavigationBarHidden:YES animated:YES];
     }
@@ -212,6 +214,15 @@
 
 //===================================
 #pragma mark -
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if (event.subtype == UIEventSubtypeMotionShake) { // 判断是否是摇动结束
+        WXLog(@"UIEventSubtypeMotionShake");
+        [self refreshWeex];
+    }
+    return;
+}
+
+#pragma mark -
 - (void)addNaviView {
     if(!_titleColor)
         _titleColor = [UIColor colorWithRed:56/255.f green:81/255.f blue:152/255.f alpha:1.f];
@@ -222,6 +233,5 @@
     [self.naviView setBackgroundColor:_titleColor];
     [self.view addSubview:self.naviView];
 }
-
 //===================================
 @end

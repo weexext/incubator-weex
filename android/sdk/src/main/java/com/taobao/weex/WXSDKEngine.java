@@ -88,10 +88,12 @@ import com.taobao.weex.ui.component.list.HorizontalListComponent;
 import com.taobao.weex.ui.component.list.SimpleListComponent;
 import com.taobao.weex.ui.component.list.WXCell;
 import com.taobao.weex.ui.component.list.WXListComponent;
+import com.taobao.weex.ui.component.list.template.WXRecyclerTemplateList;
 import com.taobao.weex.ui.module.WXMetaModule;
 import com.taobao.weex.ui.module.WXModalUIModule;
 import com.taobao.weex.ui.module.WXTimerModule;
 import com.taobao.weex.ui.module.WXWebViewModule;
+import com.taobao.weex.utils.LogLevel;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXSoInstallMgrSdk;
 import com.taobao.weex.utils.batch.BatchOperationHelper;
@@ -140,7 +142,8 @@ public class WXSDKEngine {
 
   public static boolean isInitialized(){
     synchronized(mLock) {
-      return mIsInit;
+
+      return mIsInit && WXEnvironment.JsFrameworkInit;
     }
   }
 
@@ -156,6 +159,15 @@ public class WXSDKEngine {
       }
       long start = System.currentTimeMillis();
       WXEnvironment.sSDKInitStart = start;
+      if(WXEnvironment.isApkDebugable()){
+        WXEnvironment.sLogLevel = LogLevel.DEBUG;
+      }else{
+		if(WXEnvironment.sApplication != null){
+		  WXEnvironment.sLogLevel = LogLevel.WARN;
+		}else {
+		  WXLogUtils.e(TAG,"WXEnvironment.sApplication is " + WXEnvironment.sApplication);
+		}
+      }
       doInitInternal(application,config);
       WXEnvironment.sSDKInitInvokeTime = System.currentTimeMillis()-start;
       WXLogUtils.renderPerformanceLog("SDKInitInvokeTime", WXEnvironment.sSDKInitInvokeTime);
@@ -165,6 +177,9 @@ public class WXSDKEngine {
 
   private static void doInitInternal(final Application application,final InitConfig config){
     WXEnvironment.sApplication = application;
+	if(application == null){
+	  WXLogUtils.e(TAG, " doInitInternal application is null");
+	}
     WXEnvironment.JsFrameworkInit = false;
 
     WXBridgeManager.getInstance().post(new Runnable() {
@@ -269,8 +284,10 @@ public class WXSDKEngine {
       String simpleList = "simplelist";
       registerComponent(SimpleListComponent.class,false,simpleList);
       registerComponent(WXListComponent.class, false,WXBasicComponentType.LIST,WXBasicComponentType.VLIST,WXBasicComponentType.RECYCLER,WXBasicComponentType.WATERFALL);
+      registerComponent(WXRecyclerTemplateList.class, false,WXBasicComponentType.RECYCLE_LIST);
       registerComponent(HorizontalListComponent.class,false,WXBasicComponentType.HLIST);
       registerComponent(WXBasicComponentType.CELL, WXCell.class, true);
+      registerComponent(WXBasicComponentType.CELL_SLOT, WXCell.class, true);
       registerComponent(WXBasicComponentType.INDICATOR, WXIndicator.class, true);
       registerComponent(WXBasicComponentType.VIDEO, WXVideo.class, false);
       registerComponent(WXBasicComponentType.INPUT, WXInput.class, false);
@@ -304,10 +321,12 @@ public class WXSDKEngine {
       registerDomObject(WXBasicComponentType.TEXT, WXTextDomObject.class);
       registerDomObject(WXBasicComponentType.HEADER, WXCellDomObject.class);
       registerDomObject(WXBasicComponentType.CELL, WXCellDomObject.class);
+      registerDomObject(WXBasicComponentType.CELL_SLOT, WXCellDomObject.class);
       registerDomObject(WXBasicComponentType.INPUT, BasicEditTextDomObject.class);
       registerDomObject(WXBasicComponentType.TEXTAREA, TextAreaEditTextDomObject.class);
       registerDomObject(WXBasicComponentType.SWITCH, WXSwitchDomObject.class);
       registerDomObject(WXBasicComponentType.LIST, WXListDomObject.class);
+      registerDomObject(WXBasicComponentType.RECYCLE_LIST, WXRecyclerDomObject.class);
       registerDomObject(WXBasicComponentType.VLIST, WXListDomObject.class);
       registerDomObject(WXBasicComponentType.HLIST, WXListDomObject.class);
       registerDomObject(WXBasicComponentType.SCROLLER, WXScrollerDomObject.class);
@@ -523,6 +542,7 @@ public class WXSDKEngine {
     WXEnvironment.sRemoteDebugMode = remoteDebug;
     WXBridgeManager.getInstance().restart();
     WXBridgeManager.getInstance().initScriptsFramework(framework);
+
     WXModuleManager.reload();
     WXComponentRegistry.reload();
     WXSDKManager.getInstance().postOnUiThread(new Runnable() {
@@ -530,7 +550,7 @@ public class WXSDKEngine {
       public void run() {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(JS_FRAMEWORK_RELOAD));
       }
-    }, 1000);
+    }, 0);
   }
   public static void reload(final Context context, boolean remoteDebug) {
    reload(context,null,remoteDebug);

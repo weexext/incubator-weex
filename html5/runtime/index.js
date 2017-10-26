@@ -26,24 +26,19 @@
 
 import * as shared from '../shared'
 
-import init from './init'
-import config from './config'
-
-import {
-  register,
-  unregister,
-  has
-} from './service'
+import init from './api/init'
+import config from './api/config'
+import { register, unregister, has } from './api/service'
 
 /* istanbul ignore next */
 function freezePrototype () {
   shared.freezePrototype()
 
-  Object.freeze(config.Element)
+  // Object.freeze(config.Element)
   Object.freeze(config.Comment)
   Object.freeze(config.Listener)
   Object.freeze(config.Document.prototype)
-  Object.freeze(config.Element.prototype)
+  // Object.freeze(config.Element.prototype)
   Object.freeze(config.Comment.prototype)
   Object.freeze(config.Listener.prototype)
 }

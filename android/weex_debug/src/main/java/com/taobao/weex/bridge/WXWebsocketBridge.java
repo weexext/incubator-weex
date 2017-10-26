@@ -204,6 +204,21 @@ public class WXWebsocketBridge implements IWXBridge,WXWebSocketManager.JSDebugge
     }
 
     @Override
+    public int initFrameworkEnv(String scriptsFramework,WXParams params, String cacheDir, boolean pieSupport) {
+        if (!mInit) {
+            return -1;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("method", "evalFramework");
+        ArrayList<String> args = new ArrayList<>();
+        args.add(scriptsFramework);
+        map.put("arguments", args);
+        WXWebSocketManager.getInstance().sendMessage(JSON.toJSONString(map));
+        return 0;
+    }
+
+    @Override
     public void takeHeapSnapshot(String filename) {}
 
     @Override
@@ -222,6 +237,12 @@ public class WXWebsocketBridge implements IWXBridge,WXWebSocketManager.JSDebugge
     public void callNativeComponent(String instanceId, String componentRef, String method, byte[] arguments, byte[] options) {
 
     }
+
+    @Override
+    public void reportServerCrash(String instanceId, String crashFile) {
+
+    }
+
 
     @Override
     public void onMessage(BufferedSource payload, WebSocket.PayloadType type) {

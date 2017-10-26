@@ -51,6 +51,7 @@ public class IndexActivity extends AbstractWeexActivity {
 
   private static final String TAG = "IndexActivity";
   private static final int CAMERA_PERMISSION_REQUEST_CODE = 0x1;
+  private static final int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 0x2;
   private static final String DEFAULT_IP = "your_current_IP";
   private static String sCurrentIp = DEFAULT_IP; // your_current_IP
 
@@ -147,6 +148,7 @@ public class IndexActivity extends AbstractWeexActivity {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
       startActivity(new Intent(this, CaptureActivity.class));
+    } else if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
     } else {
       Toast.makeText(this, "request camara permission fail!", Toast.LENGTH_SHORT).show();
     }

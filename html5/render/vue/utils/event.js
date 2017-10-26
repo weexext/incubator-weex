@@ -28,6 +28,22 @@ function extend (to, ...args) {
   return to
 }
 
+// if support passive event listeners.
+let _supportsPassive = false
+try {
+  document.createElement('div').addEventListener('test', _ => {}, {
+    get passive () {
+      _supportsPassive = true
+    }
+  })
+}
+catch (e) {
+  // do nothing.
+}
+export function supportsPassive () {
+  return _supportsPassive
+}
+
 /**
  * Create Event.
  * @param {DOMString} type
@@ -35,22 +51,44 @@ function extend (to, ...args) {
  */
 export function createEvent (target, type, props) {
   const event = new Event(type, { bubbles: false })
-  // event.preventDefault()
-  // event.stopPropagation()
 
   extend(event, props)
   //  phantomjs don't support customer event
-  if (window.navigator.userAgent.indexOf('PhantomJS') !== -1) {
+  if (window.navigator.userAgent.toLowerCase().indexOf('phantomjs') !== -1) {
     return event
   }
   try {
     Object.defineProperty(event, 'target', {
       enumerable: true,
-      value: target || null
+      value: target
     })
   }
   catch (err) {
-    return extend({}, event, { target: target || null })
+    return extend({}, event, { target: target })
+  }
+  return event
+}
+
+/**
+ * Create a bubbable Event.
+ * @param {DOMString} type
+ * @param {Object} props
+ */
+export function createBubblesEvent (target, type, props) {
+  const event = new Event(type, { bubbles: true })
+  extend(event, props)
+  //  phantomjs don't support customer event
+  if (window.navigator.userAgent.toLowerCase().indexOf('phantomjs') !== -1) {
+    return event
+  }
+  try {
+    Object.defineProperty(event, 'target', {
+      enumerable: true,
+      value: target
+    })
+  }
+  catch (err) {
+    return extend({}, event, { target: target })
   }
   return event
 }

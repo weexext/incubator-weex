@@ -16,8 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// import { validateStyles } from '../validator'
-import { extractComponentStyle } from '../core'
 
 const _css = `
 .weex-switch {
@@ -27,9 +25,9 @@ const _css = `
   position: relative;
   vertical-align: middle;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   box-sizing: content-box;
   background-clip: content-box;
   color: #64bd63;
@@ -40,7 +38,8 @@ const _css = `
   box-shadow: #dfdfdf 0 0 0 0 inset;
   border-radius: 0.8rem;
   -webkit-transition: border 0.4s, box-shadow 0.4s, background-color 1.2s;
-          transition: border 0.4s, box-shadow 0.4s, background-color 1.2s;
+  -moz-transition: border 0.4s, box-shadow 0.4s, background-color 1.2s;
+  transition: border 0.4s, box-shadow 0.4s, background-color 1.2s;
 }
 
 .weex-switch-checked {
@@ -68,7 +67,8 @@ const _css = `
   top: 0;
   left: 0;
   -webkit-transition: background-color 0.4s, left 0.2s;
-          transition: background-color 0.4s, left 0.2s;
+  -moz-transition: background-color 0.4s, left 0.2s;
+  transition: background-color 0.4s, left 0.2s;
 }
 
 .weex-switch-checked > .weex-switch-inner {
@@ -76,58 +76,68 @@ const _css = `
 }
 `
 
-export default {
-  props: {
-    checked: {
-      type: [Boolean, String],
-      default: false
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data () {
-    return {
-      isChecked: (this.checked !== 'false' && this.checked !== false),
-      isDisabled: (this.disabled !== 'false' && this.disabled !== false)
-    }
-  },
-  computed: {
-    wrapperClass () {
-      const classArray = ['weex-switch']
-      this.isChecked && classArray.push('weex-switch-checked')
-      this.isDisabled && classArray.push('weex-switch-disabled')
-      return classArray.join(' ')
-    }
-  },
-  methods: {
-    toggle () {
-      // TODO: handle the events
-      if (!this.isDisabled) {
-        this.isChecked = !this.isChecked
-        this.$emit('change', { value: this.isChecked })
-      }
-    }
-  },
+function getSwitch (weex) {
+  const { extractComponentStyle } = weex
 
-  render (createElement) {
-    /* istanbul ignore next */
-    // if (process.env.NODE_ENV === 'development') {
-    //   validateStyles('switch', this.$vnode.data && this.$vnode.data.staticStyle)
-    // }
-    this._renderHook()
-    return createElement('span', {
-      attrs: { 'weex-type': 'switch' },
-      on: {
-        click: event => {
-          this.$emit('click', event)
-          this.toggle()
-        }
+  return {
+    name: 'weex-switch',
+    props: {
+      checked: {
+        type: [Boolean, String],
+        default: false
       },
-      staticClass: this.wrapperClass,
-      staticStyle: extractComponentStyle(this)
-    }, [createElement('small', { staticClass: 'weex-switch-inner' })])
-  },
-  _css
+      disabled: {
+        type: [Boolean, String],
+        default: false
+      }
+    },
+    data () {
+      return {
+        isChecked: (this.checked !== 'false' && this.checked !== false),
+        isDisabled: (this.disabled !== 'false' && this.disabled !== false)
+      }
+    },
+    computed: {
+      wrapperClass () {
+        const classArray = ['weex-switch']
+        this.isChecked && classArray.push('weex-switch-checked')
+        this.isDisabled && classArray.push('weex-switch-disabled')
+        return classArray.join(' ')
+      }
+    },
+    methods: {
+      toggle () {
+        // TODO: handle the events
+        if (!this.isDisabled) {
+          this.isChecked = !this.isChecked
+          this.$emit('change', { value: this.isChecked })
+        }
+      }
+    },
+
+    render (createElement) {
+      /* istanbul ignore next */
+      // if (process.env.NODE_ENV === 'development') {
+      //   validateStyles('switch', this.$vnode.data && this.$vnode.data.staticStyle)
+      // }
+      return createElement('span', {
+        attrs: { 'weex-type': 'switch' },
+        on: {
+          click: event => {
+            this.$emit('click', event)
+            this.toggle()
+          }
+        },
+        staticClass: this.wrapperClass,
+        staticStyle: extractComponentStyle(this)
+      }, [createElement('small', { staticClass: 'weex-switch-inner' })])
+    },
+    _css
+  }
+}
+
+export default {
+  init (weex) {
+    weex.registerComponent('switch', getSwitch(weex))
+  }
 }

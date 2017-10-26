@@ -72,8 +72,10 @@ module.exports = function (config) {
       '../html5/test/render/vue/utils/*.js',
       '../html5/test/render/vue/core/*.js',
       '../html5/test/render/vue/!(utils|core)/*.js'
+      // '../html5/test/render/vue/components/switch.js',
     ],
     exclude: [
+      '../html5/test/render/vue/core/node.js',
       '../html5/test/render/vue/helper/*.js',
       '../html5/test/render/vue/vender/**/*.js',
       '../html5/test/render/vue/data/**/*.js'
@@ -92,7 +94,7 @@ module.exports = function (config) {
     browserDisconnectTimeout:10000,
     preprocessors: {
       '../html5/test/**/*.js': ['rollup'],
-      '../html5/test/**/!(components|examples|core)/*.js': ['rollup', 'coverage']
+      '../html5/test/**/!(components|examples|core)/!(component).js': ['rollup', 'coverage']
     },
     rollupPreprocessor: rollupConfig,
 

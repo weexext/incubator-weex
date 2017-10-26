@@ -70,13 +70,19 @@ function getCommonAncestor(el1, el2) {
  */
 function fireEvent(element, type, extra) {
   var event = doc.createEvent('HTMLEvents')
-  event.initEvent(type, false, true)
+  event.initEvent(type, true, true)
 
   if (typeof extra === 'object') {
     for (var p in extra) {
       event[p] = extra[p]
     }
   }
+
+  /**
+   * A flag to distinguish with other events with the same name generated
+   * by another library in the same page.
+   */ 
+  event._for = 'weex'
 
   element.dispatchEvent(event)
 }

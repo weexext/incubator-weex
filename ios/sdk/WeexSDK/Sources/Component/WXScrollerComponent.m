@@ -27,6 +27,16 @@
 #import "WXLoadingComponent.h"
 #import "WXRefreshComponent.h"
 
+@interface WXScrollerComponnetView:UIScrollView
+@end
+
+@implementation WXScrollerComponnetView
+@end;
+
+@interface WXScrollerComponnetView(WXScrollerComponnetView_ContentInsetAdjustmentBehavior)
+@property(nonatomic, assign)NSUInteger contentInsetAdjustmentBehavior;
+@end
+
 @interface WXScrollToTarget : NSObject
 
 @property (nonatomic, weak)   WXComponent *target;
@@ -59,6 +69,8 @@
     CGPoint _lastContentOffset;
     CGPoint _lastScrollEventFiredOffset;
     BOOL _scrollable;
+    NSString * _alwaysScrollableVertical;
+    NSString * _alwaysScrollableHorizontal;
 
     // vertical & horizontal
     WXScrollDirection _scrollDirection;
@@ -107,6 +119,13 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _lastScrollEventFiredOffset = CGPointMake(0, 0);
         _scrollDirection = attributes[@"scrollDirection"] ? [WXConvert WXScrollDirection:attributes[@"scrollDirection"]] : WXScrollDirectionVertical;
         _showScrollBar = attributes[@"showScrollbar"] ? [WXConvert BOOL:attributes[@"showScrollbar"]] : YES;
+        
+        if (attributes[@"alwaysScrollableVertical"]) {
+            _alwaysScrollableVertical = [WXConvert NSString:attributes[@"alwaysScrollableVertical"]];
+        }
+        if (attributes[@"alwaysScrollableHorizontal"]) {
+            _alwaysScrollableHorizontal = [WXConvert NSString:attributes[@"alwaysScrollableHorizontal"]];
+        }
         _pagingEnabled = attributes[@"pagingEnabled"] ? [WXConvert BOOL:attributes[@"pagingEnabled"]] : NO;
         _loadMoreOffset = attributes[@"loadmoreoffset"] ? [WXConvert WXPixelType:attributes[@"loadmoreoffset"] scaleFactor:self.weexInstance.pixelScaleFactor] : 0;
         _loadmoreretry = attributes[@"loadmoreretry"] ? [WXConvert NSUInteger:attributes[@"loadmoreretry"]] : 0;
@@ -130,14 +149,14 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 
 - (UIView *)loadView
 {
-    return [[UIScrollView alloc] init];
+    return [[WXScrollerComponnetView alloc] init];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self setContentSize:_contentSize];
-    UIScrollView* scrollView = (UIScrollView *)self.view;
+    WXScrollerComponnetView* scrollView = (WXScrollerComponnetView *)self.view;
     scrollView.delegate = self;
     scrollView.exclusiveTouch = YES;
     scrollView.autoresizesSubviews = NO;
@@ -146,6 +165,19 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     scrollView.showsHorizontalScrollIndicator = _showScrollBar;
     scrollView.scrollEnabled = _scrollable;
     scrollView.pagingEnabled = _pagingEnabled;
+    if (_alwaysScrollableHorizontal) {
+        scrollView.alwaysBounceHorizontal = [WXConvert BOOL:_alwaysScrollableHorizontal];
+    }
+    if (_alwaysScrollableVertical) {
+        scrollView.alwaysBounceVertical = [WXConvert BOOL:_alwaysScrollableVertical];
+    }
+    if (WX_SYS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
+        // now use the runtime to forbid the contentInset being Adjusted.
+        // here we add a category for scoller component view class compatible for new API,
+        // as we are concerning about weexSDK build as framework by Xcode8, using in Xcode9 project,
+        // so the the macro __IPHONE_11_0 will be useless in this case.
+        scrollView.contentInsetAdjustmentBehavior = 2;
+    }
     
     if (self.ancestorScroller) {
         scrollView.scrollsToTop = NO;
@@ -205,6 +237,15 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     if (attributes[@"scrollable"]) {
         _scrollable = attributes[@"scrollable"] ? [WXConvert BOOL:attributes[@"scrollable"]] : YES;
         ((UIScrollView *)self.view).scrollEnabled = _scrollable;
+    }
+    if (attributes[@"alwaysScrollableHorizontal"]) {
+        _alwaysScrollableHorizontal = [WXConvert NSString:attributes[@"alwaysScrollableHorizontal"]];
+        ((UIScrollView*)self.view).alwaysBounceHorizontal = [WXConvert BOOL:_alwaysScrollableHorizontal];
+    }
+    
+    if (attributes[@"alwaysScrollableVertical"]) {
+        _alwaysScrollableVertical = [WXConvert NSString:attributes[@"alwaysScrollableVertical"]];
+        ((UIScrollView*)self.view).alwaysBounceVertical = [WXConvert BOOL:_alwaysScrollableVertical];
     }
     if (attributes[@"offsetAccuracy"]) {
         _offsetAccuracy = [WXConvert WXPixelType:attributes[@"offsetAccuracy"] scaleFactor:self.weexInstance.pixelScaleFactor];
@@ -560,9 +601,15 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     CGRect scrollRect = CGRectMake(vx, vy, vw, vh);;
     
     // notify action for appear
-    for(WXScrollToTarget *target in self.listenerArray){
+    NSArray *listenerArrayCopy = [self.listenerArray copy];
+    for(WXScrollToTarget *target in listenerArrayCopy){
         [self scrollToTarget:target scrollRect:scrollRect];
     }
+}
+
+- (CGPoint)absolutePositionForComponent:(WXComponent *)component
+{
+    return [component->_view.superview convertPoint:component->_view.frame.origin toView:_view];
 }
 
 #pragma mark  Private Methods
@@ -570,20 +617,20 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 - (void)scrollToTarget:(WXScrollToTarget *)target scrollRect:(CGRect)rect
 {
     WXComponent *component = target.target;
-    if (![component isViewLoaded]) {
+    if (![component isViewLoaded]) { 
         return;
     }
     
     CGFloat ctop;
     if (component && component->_view && component->_view.superview) {
-        ctop = [component->_view.superview convertPoint:component->_view.frame.origin toView:_view].y;
+        ctop = [self absolutePositionForComponent:component].y;
     } else {
         ctop = 0.0;
     }
     CGFloat cbottom = ctop + CGRectGetHeight(component.calculatedFrame);
     CGFloat cleft;
     if (component && component->_view && component->_view.superview) {
-        cleft = [component->_view.superview convertPoint:component->_view.frame.origin toView:_view].x;
+        cleft = [self absolutePositionForComponent:component].x;
     } else {
         cleft = 0.0;
     }
@@ -594,6 +641,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         if(!target.hasAppear && component){
             target.hasAppear = YES;
             if (component->_appearEvent) {
+//                NSLog(@"appear:%@, %.2f", component, ctop);
                 [component fireEvent:@"appear" params:_direction ? @{@"direction":_direction} : nil];
             }
         }
@@ -601,6 +649,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         if(target.hasAppear && component){
             target.hasAppear = NO;
             if(component->_disappearEvent){
+//                NSLog(@"disappear:%@", component);
                 [component fireEvent:@"disappear" params:_direction ? @{@"direction":_direction} : nil];
             }
         }

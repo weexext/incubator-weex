@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { extractComponentStyle } from '../../core'
-import { getRgb, loopArray, getStyleSheetById } from '../../utils'
+let extractComponentStyle, getRgb, loopArray, getStyleSheetById
 
 const _css = `
 .weex-refresh-indicator,
@@ -25,13 +24,15 @@ const _css = `
   width: 1rem !important;
   height: 1rem !important;
   -webkit-box-align: center;
+  -moz-box-align: center;
   -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -webkit-box-pack: center;
+  -moz-box-pack: center;
   -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   overflow: visible;
   background: none;
 }
@@ -48,7 +49,8 @@ const _css = `
   position: relative;
   text-indent: -9999em;
   -webkit-animation: weex-spinner 1.1s infinite ease;
-          animation: weex-spinner 1.1s infinite ease;
+  -moz-animation: weex-spinner 1.1s infinite ease;
+  animation: weex-spinner 1.1s infinite ease;
 }
 
 @-webkit-keyframes weex-spinner {
@@ -180,10 +182,10 @@ function processStyle (vm) {
   return style
 }
 
-export default {
+const loadingIndicator = {
+  name: 'weex-loading-indicator',
   render (createElement) {
     this.weexType = 'loading-indicator'
-    this._renderHook()
     return createElement('mark', {
       attrs: { 'weex-type': 'loading-indicator' },
       staticClass: 'weex-loading-indicator weex-ct',
@@ -191,4 +193,14 @@ export default {
     })
   },
   _css
+}
+
+export default {
+  init (weex) {
+    extractComponentStyle = weex.extractComponentStyle
+    getRgb = weex.utils.getRgb
+    loopArray = weex.utils.loopArray
+    getStyleSheetById = weex.utils.getStyleSheetById
+    weex.registerComponent('loading-indicator', loadingIndicator)
+  }
 }

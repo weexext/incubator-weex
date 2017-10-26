@@ -233,7 +233,7 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
    * Intercept refresh view and loading view
    */
   @Override
-  protected void addSubView(View child, int index) {
+  public void addSubView(View child, int index) {
     if (child == null || getRealView() == null) {
       return;
     }
@@ -657,7 +657,7 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
       if (!helper.isWatch()) {
         continue;
       }
-      boolean visible = helper.isViewVisible();
+      boolean visible = helper.isViewVisible(false);
 
       int result = helper.setAppearStatus(visible);
       if (result != AppearanceHelper.RESULT_NO_CHANGE) {

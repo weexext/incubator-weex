@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ 
 .weex-root * {
   border-width: 0;
   border-color: inherit;
@@ -7,6 +26,8 @@
 .weex-flex-ct {
   display: -webkit-box;
   display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
@@ -14,21 +35,29 @@
   box-sizing: border-box;
   display: -webkit-box;
   display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
   display: flex;
   position: relative;
   -webkit-box-orient: vertical;
   -webkit-flex-direction: column;
+  -moz-box-orient: vertical;
+  -moz-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
   -webkit-flex-grow: 0;
+  -moz-box-flex: 0;
   -ms-flex-grow: 0;
   flex-grow: 0;
   -webkit-flex-basis: auto;
+  -ms-flex-preferred-size: auto;
   flex-basis: auto;
   -webkit-box-align: stretch;
   -webkit-align-items: stretch;
+  -moz-box-align: stretch;
   -ms-flex-align: stretch;
   align-items: stretch;
   -webkit-align-content: flex-start;
@@ -43,6 +72,9 @@
 .weex-ct.horizontal {
   -webkit-box-orient: horizontal;
   -webkit-flex-direction: row;
+  -moz-box-orient: horizontal;
+  -moz-box-direction: normal;
+  -ms-flex-direction: row;
   flex-direction: row;
 }
 
@@ -54,63 +86,16 @@
   -ms-flex-negative: 0;
   flex-shrink: 0;
   -webkit-flex-grow: 0;
+  -moz-box-flex: 0;
   -ms-flex-grow: 0;
   flex-grow: 0;
   -webkit-flex-basis: auto;
+  -ms-flex-preferred-size: auto;
   flex-basis: auto;
   border: 0 solid black;
   margin: 0;
   padding: 0;
   min-width: 0;
-}
-
-body > .weex-list,
-body > .weex-scroller,
-body > .weex-waterfall {
-  max-height: 100%;
-}
-
-.weex-list-wrapper,
-.weex-scroller-wrapper,
-.weex-waterfall-wrapper {
-  -webkit-overflow-scrolling: touch;
-}
-
-.weex-list-wrapper,
-.weex-waterfall-wrapper {
-  overflow-y: scroll !important;
-  overflow-x: hidden !important;
-}
-
-.weex-list-inner,
-.weex-scroller-inner,
-.weex-waterfall-inner {
-  -webkit-overflow-scrolling: touch;
-}
-
-.weex-waterfall-inner-columns {
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-orient: horizontal;
-}
-
-.weex-scroller-wrapper.weex-scroller-vertical {
-  overflow-x: hidden;
-  overflow-y: scroll;
-}
-
-.weex-scroller-wrapper.weex-scroller-horizontal {
-  overflow-x: scroll;
-  overflow-y: hidden;
-}
-
-.weex-scroller-horizontal .weex-scroller-inner {
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-orient: horizontal;
-  height: 100%;
 }
 
 .weex-ios-sticky {
@@ -129,22 +114,4 @@ body > .weex-waterfall {
   position: fixed;
   top: 0;
   z-index: 9999;
-}
-
-.weex-cell {
-  width: 100%;
-}
-
-.weex-refresh,
-.weex-loading {
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  width: 100%;
-  overflow: hidden;
 }

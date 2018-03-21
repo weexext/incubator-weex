@@ -252,8 +252,14 @@
     if ([self.ucx_param count]>0) {
         NSDictionary *ucx_navBar = [self.ucx_param objectForKey:@"navBar"];
         if ([ucx_navBar count]>0 && [ucx_navBar isKindOfClass:[NSDictionary class]]) {
-            ucx_navBarColor = [ucx_navBar objectForKey:@"navBarColor"];
-            ucx_backgroundColor = [ucx_navBar objectForKey:@"backgroundColor"];
+            NSString *navBarColor = [ucx_navBar objectForKey:@"navBarColor"];
+            if (navBarColor) {
+                ucx_navBarColor = navBarColor;
+            }
+            NSString *backgroundColor = [ucx_navBar objectForKey:@"backgroundColor"];
+            if (backgroundColor) {
+                ucx_backgroundColor = backgroundColor;
+            }
         }
     }
     

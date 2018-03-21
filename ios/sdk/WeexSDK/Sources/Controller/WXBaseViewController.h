@@ -38,6 +38,10 @@
  */
 - (instancetype)initWithSourceURL:(NSURL *)sourceURL;
 
+//==============================================
+- (instancetype)initWithSourceURL:(NSURL *)sourceURL ext:(NSDictionary *)dict;
+//==============================================
+
 /**
  * @abstract refreshes the weex view in controller.
  */

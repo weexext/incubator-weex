@@ -70,8 +70,10 @@
     if (obj && [obj isEqualToString:@"false"]) {
         animated = NO;
     }
-    
-    WXBaseViewController *vc = [[WXBaseViewController alloc]initWithSourceURL:[NSURL URLWithString:param[@"url"]]];
+//===============================================
+//    WXBaseViewController *vc = [[WXBaseViewController alloc]initWithSourceURL:[NSURL URLWithString:param[@"url"]]];
+    WXBaseViewController *vc = [[WXBaseViewController alloc] initWithSourceURL:[NSURL URLWithString:param[@"url"]] ext:param[@"param"]];
+//================================================
     vc.hidesBottomBarWhenPushed = YES;
     [container.navigationController pushViewController:vc animated:animated];
     [self callback:block code:MSG_SUCCESS data:nil];

@@ -247,7 +247,7 @@
 - (void)addNaviView {
 //    if(!_titleColor)
 //        _titleColor = [UIColor colorWithRed:56/255.f green:81/255.f blue:152/255.f alpha:1.f];
-    NSString *ucx_navBarColor = @"#385198";
+    NSString *ucx_navBarColor = @"#ffffff";
     NSString *ucx_backgroundColor = @"#f4f4f1";
     CGFloat ucx_navBarHeight = 128.f;
     if ([self.ucx_param count]>0) {
